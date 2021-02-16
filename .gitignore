@@ -1,0 +1,20 @@
+# Binary output dir
+bin/
+e2e/bin/
+dist/
+
+# binary at the top
+/kubectl-podnet
+
+# GOPATH created by the build script
+gopath/
+
+# Editor paths
+*.swp*
+.swp*
+.swo*
+.idea*
+
+# Test outputs
+*.out
+*.test
