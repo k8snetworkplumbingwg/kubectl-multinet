@@ -19,7 +19,7 @@ package main
 import (
 	"os"
 
-	"github.com/k8snetworkplumbingwg/kubectl-podnet/pkg/cmd"
+	"github.com/k8snetworkplumbingwg/kubectl-multinet/pkg/cmd"
 
 	"github.com/spf13/pflag"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
@@ -27,7 +27,7 @@ import (
 )
 
 func main() {
-	flags := pflag.NewFlagSet("kubectl-podnet", pflag.ExitOnError)
+	flags := pflag.NewFlagSet("kubectl-multinet", pflag.ExitOnError)
 	pflag.CommandLine = flags
 
 	root := cmd.NewCmdPodnet(genericclioptions.IOStreams{In: os.Stdin, Out: os.Stdout, ErrOut: os.Stderr})

@@ -36,7 +36,7 @@ import (
 )
 
 var (
-	podnetExample = `
+	multinetExample = `
 	# view the pod network status in text (default)
         %[1]s 
 	# view the pod network status in namespace, namespace=foobar
@@ -76,9 +76,9 @@ func NewCmdPodnet(streams genericclioptions.IOStreams) *cobra.Command {
 	o := NewPodnetOptions(streams)
 
 	cmd := &cobra.Command{
-		Use:          "podnet [flags]",
+		Use:          "multinet [flags]",
 		Short:        "View network-status annotation of Pod",
-		Example:      fmt.Sprintf(podnetExample, "kubectl"),
+		Example:      fmt.Sprintf(multinetExample, "kubectl"),
 		SilenceUsage: true,
 		RunE: func(c *cobra.Command, args []string) error {
 			if err := o.Complete(c, args); err != nil {

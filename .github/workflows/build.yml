@@ -29,4 +29,4 @@ jobs:
       env:
         GOARCH: ${{ matrix.goarch }}
         GOOS: ${{ matrix.goos }}
-      run: go build -o kubectl-podnet_${{ matrix.goos }}_${{ matrix.goarch }}  ./cmd/kubectl-podnet.go
+      run: go build -o kubectl-multinet_${{ matrix.goos }}_${{ matrix.goarch }}  ./cmd/kubectl-multinet.go
