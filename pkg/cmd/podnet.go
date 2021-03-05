@@ -55,6 +55,7 @@ type PodnetOptions struct {
 	rawConfig api.Config
 	args      []string
 
+	allNamespaces bool
 	namespace    string
 	outputTarget string
 	outputFormat string
@@ -93,7 +94,8 @@ func NewCmdPodnet(streams genericclioptions.IOStreams) *cobra.Command {
 
 	// add additional option if needed
 	//cmd.Flags().BoolVar(&o.listNamespaces, "list", o.listNamespaces, "if true, print the list of all namespaces in the current KUBECONFIG")
-	cmd.Flags().StringVarP(&o.outputFormat, "output", "o", o.outputFormat, "Output format. One of: json|text") // XXX: fill descr
+	cmd.Flags().BoolVarP(&o.allNamespaces, "all-namespaces", "A", o.allNamespaces, "Show resources in all namespaces")
+	cmd.Flags().StringVarP(&o.outputFormat, "output", "o", o.outputFormat, "Output format. One of: json|text|wide")
 	//cmd.Flags().StringVarP(&o.outputTarget, "target", "t", o.outputTarget, "Output target. One of: default|memif|pci|vdpa|vhostuser")
 	o.configFlags.AddFlags(cmd.Flags())
 
@@ -119,6 +121,10 @@ func (o *PodnetOptions) Complete(cmd *cobra.Command, args []string) error {
 		o.namespace = "default"
 	}
 
+	if o.allNamespaces {
+		o.namespace = ""
+	}
+
 	return nil
 }
 
@@ -133,11 +139,13 @@ func (o *PodnetOptions) Validate() error {
 		}
 	*/
 
-	if o.outputFormat != "" {
+	if o.outputFormat == "" {
+		o.outputFormat = "text"
+	} else {
 		o.outputFormat = strings.ToLower(o.outputFormat)
 
 		switch o.outputFormat {
-		case "json", "text": // valid format
+		case "json", "text", "wide": // valid format
 		default: // illegal format
 			return fmt.Errorf("unknown output format %s", o.outputFormat)
 		}
@@ -167,9 +175,8 @@ func (o *PodnetOptions) Run() error {
 }
 
 // PodNetDefaultOutput is intermediate representation of output.
-// This structure will be used to output JSON/yaml
-// (we cannot use cli-runtime because we don't have CRD for that)
 type PodNetDefaultOutput struct {
+	Namespace string   `json:"namespace"`
 	Pod       string   `json:"pod"`
 	Net       string   `json:"net"`
 	Interface string   `json:"interface"`
@@ -184,6 +191,21 @@ func (p *PodNetDefaultOutput) ConvertRow() []interface{} {
 		addrs = append(addrs, addr)
 	}
 	return []interface{}{
+		p.Pod,
+		p.Interface,
+		addrs,
+		p.Mac,
+	}
+}
+
+// ConvertWideRow convets PodNetDefaultOutput to TableRow's interface structure
+func (p *PodNetDefaultOutput) ConvertWideRow() []interface{} {
+	addrs := []interface{}{}
+	for _, addr := range p.Address {
+		addrs = append(addrs, addr)
+	}
+	return []interface{}{
+		p.Namespace,
 		p.Pod,
 		p.Net,
 		p.Interface,
@@ -206,6 +228,26 @@ func (o *PodnetOptions) ShowDefaultOutputJSON(output []PodNetDefaultOutput) erro
 func (o *PodnetOptions) ShowDefaultOutputText(rows []metav1.TableRow) error {
 	// Table output
 	columns := []metav1.TableColumnDefinition{
+		{Name: "Pod", Type: "string"},
+		{Name: "IF", Type: "string"},
+		{Name: "Address", Type: "array"},
+		{Name: "Mac", Type: "string"},
+	}
+
+	table := &metav1.Table{
+		ColumnDefinitions: columns,
+		Rows:              rows,
+	}
+	printer := printers.NewTablePrinter(printers.PrintOptions{})
+	printer.PrintObj(table, os.Stdout)
+	return nil
+}
+
+// ShowWideOutputText outputs TableRow, converted from PodNetWideOutput, in wide text
+func (o *PodnetOptions) ShowWideOutputText(rows []metav1.TableRow) error {
+	// Table output
+	columns := []metav1.TableColumnDefinition{
+		{Name: "Namespace", Type: "string"},
 		{Name: "Pod", Type: "string"},
 		{Name: "Net", Type: "string"},
 		{Name: "IF", Type: "string"},
@@ -241,7 +283,6 @@ func (o *PodnetOptions) ShowDefaultOutput() error {
 	outputs := []PodNetDefaultOutput{}
 
 	rows := []metav1.TableRow{}
-
 	for _, pod := range podList.Items {
 		statuses, _ := netutils.GetNetworkStatus(&pod)
 		for _, s := range statuses {
@@ -250,15 +291,26 @@ func (o *PodnetOptions) ShowDefaultOutput() error {
 				continue
 			}
 			p := PodNetDefaultOutput{}
+			if pod.Namespace == "" {
+				p.Namespace = "default"
+			} else {
+				p.Namespace = pod.Namespace
+			}
 			p.Pod = pod.Name
 			p.Net = s.Name
 			p.Interface = s.Interface
 			p.Address = append(s.IPs)
 			p.Mac = s.Mac
 			outputs = append(outputs, p)
-			rows = append(rows, metav1.TableRow{
-				Cells: p.ConvertRow(),
-			})
+			if o.outputFormat == "text" {
+				rows = append(rows, metav1.TableRow{
+					Cells: p.ConvertRow(),
+				})
+			} else {
+				rows = append(rows, metav1.TableRow{
+					Cells: p.ConvertWideRow(),
+				})
+			}
 		}
 	}
 
@@ -267,6 +319,8 @@ func (o *PodnetOptions) ShowDefaultOutput() error {
 		err = o.ShowDefaultOutputJSON(outputs)
 	case "text":
 		err = o.ShowDefaultOutputText(rows)
+	case "wide":
+		err = o.ShowWideOutputText(rows)
 	default:
 		err = o.ShowDefaultOutputText(rows)
 	}
