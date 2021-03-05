@@ -56,9 +56,9 @@ type PodnetOptions struct {
 	args      []string
 
 	allNamespaces bool
-	namespace    string
-	outputTarget string
-	outputFormat string
+	namespace     string
+	outputTarget  string
+	outputFormat  string
 	genericclioptions.IOStreams
 }
 
