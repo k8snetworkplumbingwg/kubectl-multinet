@@ -1,4 +1,4 @@
-module github.com/k8snetworkplumbingwg/kubectl-podnet
+module github.com/k8snetworkplumbingwg/kubectl-multinet
 
 go 1.14
 
