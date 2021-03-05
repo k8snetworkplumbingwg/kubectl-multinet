@@ -13,20 +13,31 @@ Show pod network status, in namespace 'default'
 
 ```
 $ kubectl multinet
-POD      NET                    IF     ADDRESS         MAC
-centos                          eth0   [10.244.1.16]   0a:f7:47:2c:a6:dd
-centos   default/macvlan-net1   net1   [10.1.1.11]     ae:e8:85:88:bb:d0
-nginx                           eth0   [10.244.2.16]   c2:d5:70:24:b8:68
-nginx    default/macvlan-net1   net1   [10.1.1.13]     fe:f2:5c:4a:ce:62
+POD                 IF     ADDRESS          MAC
+centos              eth0   [10.129.2.14]    
+centos              net1   [10.129.3.200]   8a:c9:14:c2:36:33
+nginx               eth0   [10.129.2.15]    
+nginx               net1   [10.129.3.202]   46:fa:34:1e:cc:1e
 ```
 
 Show pod network status, in namespace 'test1'
 
 ```
 $ kubectl multinet -n test1
-POD            NET                          IF     ADDRESS         MAC
-test1-centos                                eth0   [10.244.1.17]   02:47:1b:dd:9d:f4
-test1-centos   test1/test1-macvlan-conf-1   net1   [20.1.1.101]    9e:4b:ed:a9:07:07
+POD            IF     ADDRESS         MAC
+test1-centos   eth0   [10.244.1.17]   02:47:1b:dd:9d:f4
+test1-centos   net1   [20.1.1.101]    9e:4b:ed:a9:07:07
+```
+
+Show pod network status, wide format
+
+```
+$ kubectl multinet -o wide
+NAMESPACE   POD                 NET                    IF     ADDRESS          MAC
+default     centos                                     eth0   [10.129.2.14]    
+default     centos              default/macvlan-net1   net1   [10.129.3.200]   8a:c9:14:c2:36:33
+default     nginx                                      eth0   [10.129.2.15]    
+default     nginx               default/macvlan-net1   net1   [10.129.3.202]   46:fa:34:1e:cc:1e
 ```
 
 Show pod network status, in namespace 'default', JSON format (note: JSON format is experimental, so format might be changed)
