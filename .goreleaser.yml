@@ -17,7 +17,7 @@ builds:
   - ppc64le
   - arm64
 archives:
-  - wrap_in_directory: true
+  - wrap_in_directory: false
 checksum:
   name_template: 'checksums.txt'
 snapshot:
