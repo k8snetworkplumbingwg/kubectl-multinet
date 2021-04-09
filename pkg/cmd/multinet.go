@@ -282,6 +282,11 @@ func (o *PodnetOptions) ShowDefaultOutput() error {
 	}
 	outputs := []PodNetDefaultOutput{}
 
+	if len(podList.Items) == 0 {
+		fmt.Printf("No resources found")
+		return nil
+	}
+
 	rows := []metav1.TableRow{}
 	for _, pod := range podList.Items {
 		statuses, _ := netutils.GetNetworkStatus(&pod)
