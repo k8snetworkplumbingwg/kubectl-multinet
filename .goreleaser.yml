@@ -12,10 +12,14 @@ builds:
   main: ./cmd/
   goos:
   - linux
+  - darwin
   goarch:
   - amd64
   - ppc64le
   - arm64
+  ignore:
+  - goos: darwin
+    goarch: ppc64le
 archives:
   - wrap_in_directory: false
 checksum:
