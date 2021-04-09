@@ -49,8 +49,15 @@ $ kubectl multinet -o json
 
 ## Installation as kubectl plugin
 
+### Via krew
+Installation via krew (https://github.com/kubernetes-sigs/krew)
+
+```
+kubectl krew install multinet
+```
+
+### Manual Install
 See [Installing kubectl plugins](https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/#installing-kubectl-plugins).
-Krew support is TBD for now.
 
 ## License
 
