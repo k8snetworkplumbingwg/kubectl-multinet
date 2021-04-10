@@ -22,6 +22,7 @@ builds:
     goarch: ppc64le
 archives:
   - wrap_in_directory: false
+    name_template: "{{ .ProjectName }}_{{ .Tag }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 checksum:
   name_template: 'checksums.txt'
 snapshot:

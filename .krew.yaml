@@ -29,3 +29,4 @@ spec:
         os: darwin
         arch: amd64
     {{addURIAndSha "https://github.com/k8snetworkplumbingwg/kubectl-multinet/releases/download/{{ .TagName }}/kubectl-multinet_{{ .TagName }}_darwin_amd64.tar.gz" .TagName }}
+    bin: kubectl-multinet
