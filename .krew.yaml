@@ -9,8 +9,6 @@ spec:
   description: |
     Shows pods' network-status annotation, defined in NPWG multi-net-spec,
     https://github.com/k8snetworkplumbingwg/multi-net-spec.
-    Usage:
-      kubectl multinet -n <namespace-name>
   platforms:
   - selector:
       matchLabels:
