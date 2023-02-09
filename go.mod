@@ -3,7 +3,7 @@ module github.com/k8snetworkplumbingwg/kubectl-multinet
 go 1.14
 
 require (
-	github.com/emicklei/go-restful v2.15.0+incompatible // indirect
+	github.com/emicklei/go-restful v2.16.0+incompatible // indirect
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/k8snetworkplumbingwg/network-attachment-definition-client v1.1.1-0.20201119153432-9d213757d22d
