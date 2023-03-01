@@ -3,6 +3,7 @@ module github.com/k8snetworkplumbingwg/kubectl-multinet
 go 1.14
 
 require (
+	github.com/Azure/go-autorest/autorest/adal v0.9.22 // indirect
 	github.com/emicklei/go-restful v2.16.0+incompatible // indirect
 	github.com/k8snetworkplumbingwg/network-attachment-definition-client v1.1.1-0.20201119153432-9d213757d22d
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -18,6 +19,7 @@ replace (
 	github.com/containernetworking/cni => github.com/containernetworking/cni v0.8.1
 	github.com/go-openapi/spec => github.com/go-openapi/spec v0.19.5
 	github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
+	golang.org/x/net => golang.org/x/net v0.7.0
 	golang.org/x/text => golang.org/x/text v0.3.8
 	sigs.k8s.io/kustomize/api => sigs.k8s.io/kustomize/api v0.12.1
 )
