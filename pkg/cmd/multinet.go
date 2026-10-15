@@ -112,18 +112,20 @@ func (o *PodnetOptions) Complete(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	o.namespace, err = cmd.Flags().GetString("namespace")
+	if o.allNamespaces {
+		o.namespace = ""
+		return nil
+	}
+
+	ns, _, err := o.configFlags.ToRawKubeConfigLoader().Namespace()
 	if err != nil {
 		return err
 	}
 
-	if o.namespace == "" {
-		o.namespace = "default"
+	if ns == "" {
+		ns = "default"
 	}
-
-	if o.allNamespaces {
-		o.namespace = ""
-	}
+	o.namespace = ns
 
 	return nil
 }
